@@ -105,10 +105,35 @@ def run() -> dict:
         "LR_TFIDF_PR_AUC": _f(next(r for r in bench["results"] if r["id"] == "E1")["test"]["pr_auc"]),
         "DUMMY_PR_AUC": _f(next(r for r in bench["results"] if r["id"] == "B0")["test"]["pr_auc"]),
         "TABLE_BENCHMARK_TEX": tex_table([r[1:] for r in brow], header[1:], bold_row=[r[0] for r in brow].index(sel + " *")),
-        "TABLE_ABLATION_TEX": tex_table(arow, ["Set", "Families", "\\#feat", "CV PR-AUC", "CV ROC-AUC", "Test PR-AUC"]),
+        "TABLE_ABLATION_TEX": tex_table(arow, ["Set", "Families", "#feat", "CV PR-AUC", "CV ROC-AUC", "Test PR-AUC"]),
         "TABLE_BENCHMARK_MD": md_table(brow, header), "TABLE_ABLATION_MD": md_table(arow, ["Set", "Families", "#feat", "CV PR-AUC", "CV ROC-AUC", "Test PR-AUC"]),
         "TABLE_PAIRED_MD": md_table(prow, ["vs", "Baseline", "ΔPR-AUC", "95% CI", "p"]),
     }
+    # extra values / tables for the full-length LaTeX report
+    pos_src = ds.get("positive_rate_by_source", {})
+    fnm = ea["summary"].get("fn_failure_modes", {})
+    pretty = lambda k: k.replace("_", " ").lower().capitalize()  # noqa: E731
+    xgbp = opt.get("xgboost", {}).get("best_params", {})
+    numbers.update({
+        "LOG_LOSS": _f(tm["log_loss"]), "BRIER": _f(tm["brier"]), "SPEC": _f(tm["specificity"]),
+        "N_NEARDUP": dq.get("near_duplicate_groups", "n/a"), "IMBALANCE": dq.get("imbalance_ratio", "n/a"),
+        "POS_BFCL": f"{pos_src.get('bfcl_v3', 0):.1%}", "POS_MCP": f"{pos_src.get('mcp_reference_servers', 0):.1%}",
+        "POS_AUG": f"{pos_src.get('augmented', 0):.1%}", "N_REALQ": ds.get("by_episode_origin", {}).get("bfcl_real", "n/a"),
+        "G_TRAIN": sp["train"].get("groups", "n/a"), "G_VAL": sp["val"].get("groups", "n/a"), "G_TEST": sp["test"].get("groups", "n/a"),
+        "OPT_LGB_CV": _f(opt["lightgbm"]["best_value_cv_pr_auc"]) if "lightgbm" in opt else "n/a",
+        "OPT_XGB_PRUNED": opt.get("xgboost", {}).get("n_pruned", "n/a"), "OPT_LGB_PRUNED": opt.get("lightgbm", {}).get("n_pruned", "n/a"),
+        "OPT_XGB_BEST": ", ".join(f"{k}={v:.3g}" if isinstance(v, float) else f"{k}={v}" for k, v in xgbp.items()),
+        "POS_WEIGHT": f"{meta.get('pos_weight', 1):.2f}",
+        "FN_MODES": ", ".join(f"{pretty(k)} {v:.0%}" for k, v in fnm.items()),
+        "EA_POINTS": " ".join(p.rstrip(".") + "." for p in ea["summary"]["points"]),
+        "TABLE_PAIRED_TEX": tex_table([[c["vs"], c["vs_name"], f"{c['pr_auc']['mean_delta']:+.3f}",
+                                        f"[{c['pr_auc']['ci_low']:+.3f}, {c['pr_auc']['ci_high']:+.3f}]", f"{c['pr_auc']['p_value_one_sided']:.3f}"]
+                                       for c in sorted(ev["paired_tests"], key=lambda c: -c["pr_auc"]["mean_delta"])],
+                                      ["ID", "Baseline", r"$\Delta$PR-AUC", "95% CI", "p"]),
+        "TABLE_SLICE_TEX": tex_table([[pretty(r["slice"]), r["n"], f"{r['error_rate']:.1%}", f"{r['positive_rate']:.0%}", r["fn"], r["fp"]]
+                                      for r in ea["slices"].get("error_type", [])],
+                                     ["Failure mode", "n", "Misclass.", "Pos. rate", "FN", "FP"]),
+    })
     write_json({k: v for k, v in numbers.items() if not k.startswith("TABLE")}, rdir / "report_numbers.json")
 
     tdir = PROJECT_ROOT / "docs" / "report"
@@ -116,7 +141,19 @@ def run() -> dict:
         p = tdir / tpl
         if p.exists():
             text = p.read_text(encoding="utf-8")
-            text = re.sub(r"\{\{([A-Z0-9_]+)\}\}", lambda m: str(numbers.get(m.group(1), m.group(0))), text)
+            is_tex = outname.endswith(".tex")
+
+            def fill(m, is_tex=is_tex):
+                key = m.group(1)
+                if key not in numbers:
+                    return m.group(0)
+                val = str(numbers[key])
+                # values land in running LaTeX text: escape %, #, &, _ (pre-built *_TEX tables are already escaped)
+                if is_tex and not key.endswith("_TEX"):
+                    val = val.replace("&", r"\&").replace("%", r"\%").replace("_", r"\_").replace("#", r"\#")
+                return val
+
+            text = re.sub(r"\{\{([A-Z0-9_]+)\}\}", fill, text)
             (tdir / outname).write_text(text, encoding="utf-8")
     readme = PROJECT_ROOT / "README.md"
     if readme.exists():

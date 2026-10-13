@@ -74,7 +74,7 @@
 <rect x="30" y="610" width="230" height="74" rx="14" fill="#ffffff" stroke="#d7d9e2"/>
 <text x="44" y="632" font-size="10" font-weight="700" fill="#52514e">18</text>
 <text x="44" y="651" font-size="12.5" font-weight="700" fill="#0c1222">HUGGING FACE / AWS</text>
-<text x="44" y="669" font-size="11" fill="#52514e">Docker Space · port 7860</text>
+<text x="44" y="669" font-size="11" fill="#52514e">Gradio Space · public demo</text>
 <line x1="260" y1="107.0" x2="297" y2="107.0" stroke="#7b849a" stroke-width="1.8" marker-end="url(#a)"/>
 <line x1="530" y1="107.0" x2="567" y2="107.0" stroke="#7b849a" stroke-width="1.8" marker-end="url(#a)"/>
 <line x1="685.0" y1="144" x2="685.0" y2="175" stroke="#7b849a" stroke-width="1.8" marker-end="url(#a)"/>
