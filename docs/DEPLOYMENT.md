@@ -19,18 +19,19 @@ docker build -t mcpguard . && docker run -p 7860:7860 mcpguard
 ```
 The image runs as non-root user `appuser` (UID 1000), has a `HEALTHCHECK` on `/health`, and ships the MiniLM embedding model so it starts offline.
 
-## 3. Hugging Face Spaces (Docker SDK)
-1. Create a new Space → **SDK: Docker** → blank template.
-2. Push this repository to the Space (the YAML front-matter at the top of `README.md` already sets `sdk: docker` and `app_port: 7860`):
+## 3. Hugging Face Spaces (Gradio SDK, free tier)
+Hugging Face restricts the Docker SDK to paid plans, so the Space uses the free **Gradio SDK**. [`space_app.py`](../space_app.py) serves the whole FastAPI app (dashboard at `/`, REST API, `/docs`) and mounts a Gradio analyzer at `/gradio`. The `README.md` front-matter sets `sdk: gradio`, `sdk_version`, `python_version` and `app_file: space_app.py`.
+
+1. Create a Space: **SDK: Gradio**, template **Blank**, free hardware, visibility **Public**.
+2. Push the lean `hf-space` branch (one commit, serving dependencies only, binaries in Git LFS):
    ```bash
-   git remote add space https://huggingface.co/spaces/<user>/mcpguard
-   git push space main
+   git remote add space https://huggingface.co/spaces/<user>/MCPGuard
+   git push space hf-space:main --force      # password = a Hugging Face *write* token
    ```
-   Use `git lfs track "*.joblib" "*.npz"` if the Space rejects files larger than 10 MB.
-3. The Space builds the `Dockerfile` and exposes the dashboard at `https://<user>-mcpguard.hf.space`.
+3. Watch the **Logs** tab; the first build installs PyTorch and takes 10–20 min. The app is then live at `https://<user>-mcpguard.hf.space` (Gradio UI at `/gradio`).
 4. Optional secret: `MCPGUARD_ADMIN_TOKEN` (protects `POST /reload-model`).
 
-**Status: PENDING USER ACTION.** Pushing to a Space needs your Hugging Face account and token, so it has not been done from this environment. After deploying, record the live URL in `FINAL_REQUIREMENTS_CHECKLIST.md`.
+Run the Space entry point locally with `python space_app.py`.
 
 ## 4. AWS / GCP (alternative)
 - **AWS App Runner / ECS Fargate:** push the image to ECR (`docker tag mcpguard <acct>.dkr.ecr.<region>.amazonaws.com/mcpguard && docker push …`), create a service on port 7860 with health-check path `/health`.

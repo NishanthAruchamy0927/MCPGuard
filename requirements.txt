@@ -5,6 +5,7 @@
 # --- serving ---------------------------------------------------------------
 -r requirements-serve.txt
 pyarrow==25.0.1          # pandas 3 string dtype; needed to unpickle the feature pipeline
+gradio==6.30.0           # Hugging Face Space UI (space_app.py)
 
 # --- training / research ---------------------------------------------------
 optuna==5.0.0

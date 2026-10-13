@@ -3,8 +3,10 @@ title: MCPGuard
 emoji: 🛡️
 colorFrom: indigo
 colorTo: blue
-sdk: docker
-app_port: 7860
+sdk: gradio
+sdk_version: 6.30.0
+python_version: "3.12"
+app_file: space_app.py
 pinned: false
 license: mit
 short_description: Predict which MCP tool descriptions cause AI-agent errors
@@ -168,7 +170,7 @@ docker compose up --build            # http://localhost:7860
 The image is non-root, has a health check, and bakes in the model and embedding weights.
 
 ## Hugging Face deployment
-This repository is a ready **Docker Space**: the front-matter above sets `sdk: docker` and `app_port: 7860`. Push it to a new Space (see [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)). AWS App Runner and GCP Cloud Run instructions are included there.
+Hugging Face now restricts the Docker SDK to paid plans, so the public Space uses the free **Gradio SDK**: the front-matter above points it at [`space_app.py`](space_app.py), which serves the full FastAPI app (dashboard at `/`, REST API, `/docs`) and mounts a Gradio analyzer at `/gradio`. The same image also runs anywhere with Docker (`docker compose up --build`). Steps, plus AWS App Runner and GCP Cloud Run options, are in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
 ## API documentation
 | Method | Endpoint | Purpose |
