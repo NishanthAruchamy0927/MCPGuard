@@ -18,11 +18,11 @@ Status key: **COMPLETE** = verified by running it in this environment · **PARTI
 | Docker | COMPLETE | `docker build -t mcpguard .` succeeded (image 2.98 GB, CPU-only torch, MiniLM baked in). Container verified: Docker health status `healthy`, runs as `appuser`, `GET /health` → `model_loaded: true`, `POST /predict` returned a CRITICAL prediction with SHAP factors, dashboard `GET /` → 200. Files: Dockerfile, docker-compose.yml, .dockerignore |
 | Cloud deployment | COMPLETE | Public Hugging Face Space (free Gradio SDK; the Docker SDK is paid-only on Hugging Face): **https://nishanth0811-mcpguard.hf.space** · Gradio UI https://nishanth0811-mcpguard.hf.space/gradio · API docs https://nishanth0811-mcpguard.hf.space/docs · Space https://huggingface.co/spaces/Nishanth0811/MCPGuard. Verified live: `/health` OK, `/predict` and `/batch-predict/file` return the same scores as the local build, a Gradio API call succeeds, and an automated browser test passed 30/30 checks (all 9 pages, tabs, analyzer presets, CSV/JSON uploads) with 0 browser errors. `space_app.py` serves the dashboard + REST API and mounts the Gradio analyzer |
 | GitHub repository | COMPLETE | Public: https://github.com/NishanthAruchamy0927/MCPGuard (code, configs, trained models and artefacts; large binaries via Git LFS) |
-| Report | PARTIAL | IEEE report auto-filled from results: `docs/report/IEEE_REPORT.md` and `docs/report/ieee_report.tex` (IEEEtran). **PENDING USER ACTION:** add author names, compile to PDF (Overleaf) and check the 10-page limit |
+| Report | COMPLETE | 6-page IEEE-format report (IEEEtran), compiled to PDF on Overleaf with author details; sections follow the guideline structure; all numbers auto-filled from the pipeline (`docs/report/ieee_report.tex`, Overleaf package `docs/report/MCPGuard_Overleaf.zip`) |
 | IEEE references | PARTIAL | 20 IEEE-style references in `docs/REFERENCES.md`. **PENDING USER ACTION:** verify each entry against the publisher before submission |
 | Tests | COMPLETE | `pytest -q`: 53 passed (preprocessing, features, harness/validator, models, split leakage, prediction contract, SHAP additivity, API) |
 
 ## Remaining manual actions
 1. ~~Deploy to the cloud~~ — done: https://nishanth0811-mcpguard.hf.space
 2. ~~Push to a public GitHub repository~~ — done: https://github.com/NishanthAruchamy0927/MCPGuard
-3. Fill in author names, compile `docs/report/ieee_report.tex` to PDF, and verify the references.
+3. ~~Compile the report PDF~~ — done. Verify the 20 references against the publishers before submission.
