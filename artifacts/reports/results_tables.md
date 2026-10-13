@@ -23,12 +23,12 @@ Selected production model: **Optimized Combined Features + XGBoost** (XGBoost (O
 ## Experiment matrix
 | ID | Experiment | Val PR-AUC | Test F1 | Test ROC-AUC | Test PR-AUC | Train s |
 |---|---|---|---|---|---|---|
-| E1 | TF-IDF + Logistic Regression | 0.616 | 0.626 | 0.735 | 0.661 | 0.25 |
-| E2 | TF-IDF + Random Forest | 0.651 | 0.686 | 0.779 | 0.698 | 1.66 |
-| E3 | Semantic Embedding + Random Forest | 0.637 | 0.611 | 0.695 | 0.616 | 1.61 |
-| E4 | Semantic Embedding + XGBoost | 0.608 | 0.607 | 0.673 | 0.599 | 0.69 |
-| E5 | Combined Features + XGBoost | 0.669 | 0.660 | 0.762 | 0.693 | 1.59 |
-| E6 | Optimized Combined Features + XGBoost | 0.706 | 0.684 | 0.779 | 0.709 | 2.12 |
+| E1 | TF-IDF + Logistic Regression | 0.616 | 0.626 | 0.735 | 0.661 | 0.15 |
+| E2 | TF-IDF + Random Forest | 0.651 | 0.686 | 0.779 | 0.698 | 1.54 |
+| E3 | Semantic Embedding + Random Forest | 0.637 | 0.611 | 0.695 | 0.616 | 1.22 |
+| E4 | Semantic Embedding + XGBoost | 0.608 | 0.607 | 0.673 | 0.599 | 0.57 |
+| E5 | Combined Features + XGBoost | 0.669 | 0.660 | 0.762 | 0.693 | 1.25 |
+| E6 | Optimized Combined Features + XGBoost | 0.706 | 0.684 | 0.779 | 0.709 | 1.84 |
 
 ## Ablation (XGBoost, 5-fold grouped CV on train+val)
 | Set | Families | #feat | CV PR-AUC | CV ROC-AUC | Test PR-AUC |

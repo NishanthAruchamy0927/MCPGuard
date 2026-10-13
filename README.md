@@ -25,6 +25,8 @@ short_description: Predict which MCP tool descriptions cause AI-agent errors
 
 19MAM56 Advanced Machine Learning Lab · CAT II Project · Coimbatore Institute of Technology
 
+**Live demo:** [https://nishanth0811-mcpguard.hf.space](https://nishanth0811-mcpguard.hf.space) · **Gradio UI:** [https://nishanth0811-mcpguard.hf.space/gradio](https://nishanth0811-mcpguard.hf.space/gradio) · **API docs:** [https://nishanth0811-mcpguard.hf.space/docs](https://nishanth0811-mcpguard.hf.space/docs) · **Code:** [https://github.com/NishanthAruchamy0927/MCPGuard](https://github.com/NishanthAruchamy0927/MCPGuard)
+
 </div>
 
 ---
@@ -170,6 +172,8 @@ docker compose up --build            # http://localhost:7860
 The image is non-root, has a health check, and bakes in the model and embedding weights.
 
 ## Hugging Face deployment
+**Live:** [https://nishanth0811-mcpguard.hf.space](https://nishanth0811-mcpguard.hf.space) (Space: [https://huggingface.co/spaces/Nishanth0811/MCPGuard](https://huggingface.co/spaces/Nishanth0811/MCPGuard)).
+
 Hugging Face now restricts the Docker SDK to paid plans, so the public Space uses the free **Gradio SDK**: the front-matter above points it at [`space_app.py`](space_app.py), which serves the full FastAPI app (dashboard at `/`, REST API, `/docs`) and mounts a Gradio analyzer at `/gradio`. The same image also runs anywhere with Docker (`docker compose up --build`). Steps, plus AWS App Runner and GCP Cloud Run options, are in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
 ## API documentation

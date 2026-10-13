@@ -20,6 +20,8 @@ docker build -t mcpguard . && docker run -p 7860:7860 mcpguard
 The image runs as non-root user `appuser` (UID 1000), has a `HEALTHCHECK` on `/health`, and ships the MiniLM embedding model so it starts offline.
 
 ## 3. Hugging Face Spaces (Gradio SDK, free tier)
+**Live:** https://nishanth0811-mcpguard.hf.space (Space: https://huggingface.co/spaces/Nishanth0811/MCPGuard).
+
 Hugging Face restricts the Docker SDK to paid plans, so the Space uses the free **Gradio SDK**. [`space_app.py`](../space_app.py) serves the whole FastAPI app (dashboard at `/`, REST API, `/docs`) and mounts a Gradio analyzer at `/gradio`. The `README.md` front-matter sets `sdk: gradio`, `sdk_version`, `python_version` and `app_file: space_app.py`.
 
 1. Create a Space: **SDK: Gradio**, template **Blank**, free hardware, visibility **Public**.
