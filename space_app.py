@@ -7,6 +7,17 @@ mounts a Gradio analyzer at /gradio, all on one port:
 """
 from __future__ import annotations
 
+# `spaces` (ZeroGPU) must be imported before torch. MCPGuard runs on CPU, but ZeroGPU
+# hardware refuses to start unless at least one @spaces.GPU function is registered.
+try:
+    import spaces
+
+    @spaces.GPU
+    def _gpu_probe() -> bool:  # never called
+        return True
+except Exception:  # noqa: BLE001 - `spaces` only exists on Hugging Face
+    spaces = None
+
 import json
 import os
 
@@ -15,15 +26,6 @@ import uvicorn
 
 from backend.app.main import app
 from src.inference.predictor import get_predictor
-
-try:  # ZeroGPU hardware requires at least one @spaces.GPU function; MCPGuard itself runs on CPU.
-    import spaces
-
-    @spaces.GPU
-    def _gpu_probe() -> bool:  # never called
-        return True
-except Exception:  # noqa: BLE001 - `spaces` only exists on Hugging Face
-    pass
 
 EXAMPLES = [
     ["get_current_weather", "Get the current weather for a city. Use this when the user asks about present conditions (not forecasts). "
@@ -78,7 +80,18 @@ with gr.Blocks(title="MCPGuard · Gradio analyzer") as demo:
     gr.Examples(EXAMPLES, inputs=[name, desc, schema])
     btn.click(analyze, inputs=[name, desc, schema], outputs=[prob, summary, fixes, shap_tbl])
 
-app = gr.mount_gradio_app(app, demo, path="/gradio")
+# SSR off: in mounted mode Gradio's SSR starts a Node server on the first free port, which on
+# Spaces is 7860 itself (uvicorn binds only after startup), so the API server could not bind.
+app = gr.mount_gradio_app(app, demo, path="/gradio", ssr_mode=False)
+
+
+def _zerogpu_startup_report() -> None:
+    """Normally sent by gr.Blocks.launch(); we serve via uvicorn, so send it ourselves."""
+    startup = getattr(getattr(spaces, "zero", None), "startup", None)
+    if callable(startup):
+        startup()
+
 
 if __name__ == "__main__":
+    _zerogpu_startup_report()
     uvicorn.run(app, host=os.environ.get("HOST", "0.0.0.0"), port=int(os.environ.get("PORT", "7860")))
