@@ -1,0 +1,23 @@
+{
+  "model": "xgboost",
+  "best_value_cv_pr_auc": 0.6897112658754948,
+  "best_params": {
+    "n_estimators": 600,
+    "max_depth": 5,
+    "learning_rate": 0.014185115794368198,
+    "subsample": 0.7708740668717587,
+    "colsample_bytree": 0.5009611689857603,
+    "min_child_weight": 0.728159247998613,
+    "gamma": 0.0013775709213150363,
+    "reg_alpha": 0.0005164208323737136,
+    "reg_lambda": 0.03713846440211207
+  },
+  "best_trial": 39,
+  "n_trials": 40,
+  "n_pruned": 15,
+  "cv_folds": 4,
+  "search_seconds": 229.5,
+  "sampler": "TPE",
+  "pruner": "MedianPruner",
+  "objective": "mean grouped-CV average precision (train split)"
+}

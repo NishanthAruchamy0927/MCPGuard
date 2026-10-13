@@ -1,0 +1,25 @@
+{
+  "train": {
+    "n": 1537,
+    "share": 0.7142,
+    "positive_rate": 0.4079,
+    "groups": 1005
+  },
+  "val": {
+    "n": 307,
+    "share": 0.1427,
+    "positive_rate": 0.4072,
+    "groups": 202
+  },
+  "test": {
+    "n": 308,
+    "share": 0.1431,
+    "positive_rate": 0.4058,
+    "groups": 196
+  },
+  "group_overlap": {
+    "train_val": 0,
+    "train_test": 0,
+    "val_test": 0
+  }
+}

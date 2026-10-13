@@ -1,0 +1,228 @@
+# =====================================================================
+# MCPGuard — central configuration
+# Every tunable value used by the pipeline, API and UI lives here.
+# =====================================================================
+
+project:
+  name: MCPGuard
+  title: "Predicting Which MCP Tool Descriptions Cause Agent Errors"
+  subtitle: "An Explainable Machine Learning Framework for Detecting High-Risk Model Context Protocol Tool Descriptions"
+  tagline: "Predict. Explain. Prevent agent failures."
+  version: "1.0.0"
+
+seed: 42
+
+paths:
+  raw: data/raw
+  processed: data/processed
+  external: data/external
+  metadata: data/metadata
+  models: models
+  figures: artifacts/figures
+  metrics: artifacts/metrics
+  reports: artifacts/reports
+  experiments: artifacts/experiments
+  mlruns: artifacts/mlruns
+
+# ---------------------------------------------------------------------
+# Data acquisition
+# ---------------------------------------------------------------------
+data:
+  bfcl:
+    base_url: "https://huggingface.co/datasets/gorilla-llm/Berkeley-Function-Calling-Leaderboard/resolve/main"
+    # Categories whose functions are JSON-schema tools with gold calls.
+    # (java/javascript are excluded: language-specific type systems.)
+    categories:
+      - simple
+      - multiple
+      - parallel
+      - parallel_multiple
+      - live_simple
+      - live_multiple
+      - live_parallel
+      - live_parallel_multiple
+    version_prefix: "BFCL_v3_"
+  mcp_reference_file: data/external/mcp_reference_tools.json
+  dataset_file: data/processed/mcp_tools_dataset.jsonl
+  dataset_csv: data/processed/mcp_tools_dataset.csv
+  clean_file: data/processed/mcp_tools_clean.jsonl
+  dataset_version: "v1.0"
+
+# ---------------------------------------------------------------------
+# Augmentation (documented degradation / enrichment operators)
+# ---------------------------------------------------------------------
+augmentation:
+  enabled: true
+  fraction: 0.30            # share of seed tools that receive one variant
+  operators:                # operator -> sampling weight
+    strip_param_descriptions: 1.0
+    drop_required_list: 1.0
+    vague_description: 1.2
+    truncate_description: 1.0
+    remove_enums: 0.8
+    remove_types: 0.8
+    add_noise_params: 0.6
+    malform_schema: 0.3
+    enrich_documentation: 1.6   # positive augmentation (improves docs)
+
+# ---------------------------------------------------------------------
+# Controlled agent benchmark (simulated tool-calling agent)
+# ---------------------------------------------------------------------
+harness:
+  episodes_per_tool: 10
+  failure_rate_threshold: 0.30      # error_occurred = failure_rate >= threshold
+  n_similar_distractors: 0
+  max_distractor_similarity: 0.90
+  n_random_distractors: 2
+  selection_temperature: 0.02
+  severity_bins:                    # failure_rate upper bounds (exclusive)
+    NONE: 0.0001
+    LOW: 0.30
+    MEDIUM: 0.50
+    HIGH: 0.75
+    CRITICAL: 1.01
+  probabilities:
+    literal_value_ok: 0.97
+    enum_visible_ok: 0.95
+    value_mentioned_ok: 0.90
+    format_hint_ok: 0.86
+    described_ok: 0.76
+    undocumented_ok: 0.55
+    boolean_described_ok: 0.90
+    boolean_undocumented_ok: 0.72
+    nested_depth_decay: 0.93
+    type_error_untyped: 0.22
+    type_error_untyped_container: 0.35
+    omit_when_not_marked_required: 0.30
+    include_invisible_param_named: 0.55
+    include_invisible_param_unnamed: 0.20
+    hallucination_base: 0.03
+    hallucination_many_optional: 0.05
+    hallucination_short_description: 0.06
+    strict_server: 0.5
+    malformed_schema_fail: 0.85
+
+# ---------------------------------------------------------------------
+# Splitting
+# ---------------------------------------------------------------------
+split:
+  train: 0.70
+  val: 0.15
+  test: 0.15
+  group_column: lineage_id      # augmented variants stay with their parent
+  stratify_column: error_occurred
+
+# ---------------------------------------------------------------------
+# Features
+# ---------------------------------------------------------------------
+features:
+  tfidf_word:
+    max_features: 4000
+    ngram_range: [1, 2]
+    min_df: 2
+    sublinear_tf: true
+  tfidf_char:
+    max_features: 3000
+    ngram_range: [3, 5]
+    min_df: 3
+    sublinear_tf: true
+  text_svd_components: 64        # LSA reduction of TF-IDF
+  embedding:
+    backend: sentence-transformers   # falls back to "lsa" if unavailable
+    model_name: sentence-transformers/all-MiniLM-L6-v2
+    batch_size: 64
+    cache_file: data/processed/embeddings_cache.npz
+  embedding_pca_components: 48
+  umap:
+    n_neighbors: 15
+    min_dist: 0.1
+    metric: cosine
+
+# ---------------------------------------------------------------------
+# Models
+# ---------------------------------------------------------------------
+models:
+  logistic_regression:
+    C: 1.0
+    max_iter: 3000
+  random_forest:
+    n_estimators: 400
+    max_depth: null
+    min_samples_leaf: 2
+  xgboost:
+    n_estimators: 400
+    max_depth: 5
+    learning_rate: 0.05
+    subsample: 0.85
+    colsample_bytree: 0.6
+    min_child_weight: 2
+    reg_lambda: 1.0
+  lightgbm:
+    n_estimators: 400
+    num_leaves: 31
+    learning_rate: 0.05
+    subsample: 0.85
+    colsample_bytree: 0.6
+    min_child_samples: 15
+  hist_gradient_boosting:
+    max_iter: 300
+    learning_rate: 0.06
+    max_leaf_nodes: 31
+  mlp:
+    hidden_layer_sizes: [256, 64]
+    alpha: 0.001
+    learning_rate_init: 0.001
+    max_iter: 400
+    early_stopping: true
+
+# ---------------------------------------------------------------------
+# Hyperparameter optimisation
+# ---------------------------------------------------------------------
+optuna:
+  n_trials_xgboost: 40
+  n_trials_lightgbm: 30
+  cv_folds: 4
+  metric: average_precision
+  timeout_seconds: 900
+
+# ---------------------------------------------------------------------
+# Model selection & decision rules
+# ---------------------------------------------------------------------
+selection:
+  primary: pr_auc
+  secondary: f1
+  tertiary: roc_auc
+  threshold_strategy: max_f1_on_validation
+
+risk_levels:                # probability (%) lower bounds
+  LOW: 0
+  MEDIUM: 25
+  HIGH: 50
+  CRITICAL: 75
+
+explainability:
+  shap_background_size: 200
+  shap_sample_size: 400
+  top_k_features: 8
+
+# ---------------------------------------------------------------------
+# Experiment tracking
+# ---------------------------------------------------------------------
+tracking:
+  mlflow_enabled: true
+  experiment_name: MCPGuard
+  custom_log_file: artifacts/experiments/experiments.jsonl
+
+# ---------------------------------------------------------------------
+# Serving
+# ---------------------------------------------------------------------
+api:
+  host: 0.0.0.0
+  port: 7860
+  max_batch_size: 500
+  max_description_chars: 8000
+  max_schema_chars: 50000
+  cors_origins: ["*"]
+
+database:
+  url: "sqlite:///artifacts/mcpguard.db"

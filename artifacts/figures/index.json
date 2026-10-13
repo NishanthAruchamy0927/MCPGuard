@@ -1,0 +1,18 @@
+{
+  "figures": [
+    "01_confusion_matrix.png",
+    "02_roc_curves.png",
+    "03_pr_curves.png",
+    "04_shap_importance.png",
+    "05_shap_beeswarm.png",
+    "06_umap_projection.png",
+    "07_pca_projection.png",
+    "08_model_comparison.png",
+    "09_error_type_distribution.png",
+    "10_probability_distribution.png",
+    "11_risk_distribution.png",
+    "12_ablation_study.png",
+    "13_optuna_history.png",
+    "14_calibration.png"
+  ]
+}

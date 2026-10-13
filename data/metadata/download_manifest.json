@@ -1,0 +1,135 @@
+{
+  "retrieved_at": "2026-10-12T17:08:36+00:00",
+  "license": "Apache-2.0 (BFCL)",
+  "files": [
+    {
+      "category": "simple",
+      "kind": "functions",
+      "url": "https://huggingface.co/datasets/gorilla-llm/Berkeley-Function-Calling-Leaderboard/resolve/main/BFCL_v3_simple.json",
+      "path": "data\\raw\\bfcl\\BFCL_v3_simple.json",
+      "bytes": 280474,
+      "sha256": "fbc37b2ad252bf9af985582e0e07b456173fe627d957491472ea9cef5fb83158"
+    },
+    {
+      "category": "simple",
+      "kind": "possible_answer",
+      "url": "https://huggingface.co/datasets/gorilla-llm/Berkeley-Function-Calling-Leaderboard/resolve/main/possible_answer/BFCL_v3_simple.json",
+      "path": "data\\raw\\bfcl\\pa_BFCL_v3_simple.json",
+      "bytes": 60809,
+      "sha256": "2911a2bc00df82c4f999ffa64fedb0164cb88e96212ffa5972087eb91fd496ee"
+    },
+    {
+      "category": "multiple",
+      "kind": "functions",
+      "url": "https://huggingface.co/datasets/gorilla-llm/Berkeley-Function-Calling-Leaderboard/resolve/main/BFCL_v3_multiple.json",
+      "path": "data\\raw\\bfcl\\BFCL_v3_multiple.json",
+      "bytes": 316583,
+      "sha256": "aef168155ebd74b7ac2401198b201343bc7d16d7a3d7e0d4e6d8ee82c6969b2a"
+    },
+    {
+      "category": "multiple",
+      "kind": "possible_answer",
+      "url": "https://huggingface.co/datasets/gorilla-llm/Berkeley-Function-Calling-Leaderboard/resolve/main/possible_answer/BFCL_v3_multiple.json",
+      "path": "data\\raw\\bfcl\\pa_BFCL_v3_multiple.json",
+      "bytes": 32254,
+      "sha256": "244e00ce9395df948bcafc7bee64e8f9c87ef70887587d83cae45b13699f3047"
+    },
+    {
+      "category": "parallel",
+      "kind": "functions",
+      "url": "https://huggingface.co/datasets/gorilla-llm/Berkeley-Function-Calling-Leaderboard/resolve/main/BFCL_v3_parallel.json",
+      "path": "data\\raw\\bfcl\\BFCL_v3_parallel.json",
+      "bytes": 172094,
+      "sha256": "fad375d68295776efb63e5aa331dd884f8635e7bb50e05908113c74f14281c3c"
+    },
+    {
+      "category": "parallel",
+      "kind": "possible_answer",
+      "url": "https://huggingface.co/datasets/gorilla-llm/Berkeley-Function-Calling-Leaderboard/resolve/main/possible_answer/BFCL_v3_parallel.json",
+      "path": "data\\raw\\bfcl\\pa_BFCL_v3_parallel.json",
+      "bytes": 65905,
+      "sha256": "3af54bf04e5b7640b03a9b6a82440f52474feb24b398f94435fd2b155c7727de"
+    },
+    {
+      "category": "parallel_multiple",
+      "kind": "functions",
+      "url": "https://huggingface.co/datasets/gorilla-llm/Berkeley-Function-Calling-Leaderboard/resolve/main/BFCL_v3_parallel_multiple.json",
+      "path": "data\\raw\\bfcl\\BFCL_v3_parallel_multiple.json",
+      "bytes": 347080,
+      "sha256": "8863ea8433239f55c5f016154cf0830853c89f693c6ea270396a2fa121960579"
+    },
+    {
+      "category": "parallel_multiple",
+      "kind": "possible_answer",
+      "url": "https://huggingface.co/datasets/gorilla-llm/Berkeley-Function-Calling-Leaderboard/resolve/main/possible_answer/BFCL_v3_parallel_multiple.json",
+      "path": "data\\raw\\bfcl\\pa_BFCL_v3_parallel_multiple.json",
+      "bytes": 74601,
+      "sha256": "df4d2c16238c1465dc04697c273cf3ab4a450075fcd274e3dc86ad5bf0049b75"
+    },
+    {
+      "category": "live_simple",
+      "kind": "functions",
+      "url": "https://huggingface.co/datasets/gorilla-llm/Berkeley-Function-Calling-Leaderboard/resolve/main/BFCL_v3_live_simple.json",
+      "path": "data\\raw\\bfcl\\BFCL_v3_live_simple.json",
+      "bytes": 260128,
+      "sha256": "b398743e6c0dfd2a87cee97a3bc1b9b90b81edc228c3153a820a93b51186fc00"
+    },
+    {
+      "category": "live_simple",
+      "kind": "possible_answer",
+      "url": "https://huggingface.co/datasets/gorilla-llm/Berkeley-Function-Calling-Leaderboard/resolve/main/possible_answer/BFCL_v3_live_simple.json",
+      "path": "data\\raw\\bfcl\\pa_BFCL_v3_live_simple.json",
+      "bytes": 46971,
+      "sha256": "4a1988780cdd8a723967587614cb84a9f53aa5d6fd37f83c78a0dd7acc2f3d15"
+    },
+    {
+      "category": "live_multiple",
+      "kind": "functions",
+      "url": "https://huggingface.co/datasets/gorilla-llm/Berkeley-Function-Calling-Leaderboard/resolve/main/BFCL_v3_live_multiple.json",
+      "path": "data\\raw\\bfcl\\BFCL_v3_live_multiple.json",
+      "bytes": 3891342,
+      "sha256": "af2520ac5bb0b05aa9b8abe14a79b87198e5a3137a707d4f5633c792330f0cee"
+    },
+    {
+      "category": "live_multiple",
+      "kind": "possible_answer",
+      "url": "https://huggingface.co/datasets/gorilla-llm/Berkeley-Function-Calling-Leaderboard/resolve/main/possible_answer/BFCL_v3_live_multiple.json",
+      "path": "data\\raw\\bfcl\\pa_BFCL_v3_live_multiple.json",
+      "bytes": 199668,
+      "sha256": "97e90d59c5bd76c55a2920ce93e5566e9046307d3f558578f085f9d3a56c3084"
+    },
+    {
+      "category": "live_parallel",
+      "kind": "functions",
+      "url": "https://huggingface.co/datasets/gorilla-llm/Berkeley-Function-Calling-Leaderboard/resolve/main/BFCL_v3_live_parallel.json",
+      "path": "data\\raw\\bfcl\\BFCL_v3_live_parallel.json",
+      "bytes": 15649,
+      "sha256": "6c26e9fdc3350cf596e6d1ea9c179cbff834761bccf562f4141ed29a839ca421"
+    },
+    {
+      "category": "live_parallel",
+      "kind": "possible_answer",
+      "url": "https://huggingface.co/datasets/gorilla-llm/Berkeley-Function-Calling-Leaderboard/resolve/main/possible_answer/BFCL_v3_live_parallel.json",
+      "path": "data\\raw\\bfcl\\pa_BFCL_v3_live_parallel.json",
+      "bytes": 4974,
+      "sha256": "5e3d26c9103dd25912003d3c5f681f30efc6fd2b5f8ba474450f2df21fdf6fcb"
+    },
+    {
+      "category": "live_parallel_multiple",
+      "kind": "functions",
+      "url": "https://huggingface.co/datasets/gorilla-llm/Berkeley-Function-Calling-Leaderboard/resolve/main/BFCL_v3_live_parallel_multiple.json",
+      "path": "data\\raw\\bfcl\\BFCL_v3_live_parallel_multiple.json",
+      "bytes": 82332,
+      "sha256": "21d4b9319c1faac431e22757b367ea28917fe467364c3a4b17f16ec06d4f6e79"
+    },
+    {
+      "category": "live_parallel_multiple",
+      "kind": "possible_answer",
+      "url": "https://huggingface.co/datasets/gorilla-llm/Berkeley-Function-Calling-Leaderboard/resolve/main/possible_answer/BFCL_v3_live_parallel_multiple.json",
+      "path": "data\\raw\\bfcl\\pa_BFCL_v3_live_parallel_multiple.json",
+      "bytes": 7420,
+      "sha256": "f5b5f360556c5feb51db46fb9f56ee4b304f4b45b161599bbb14161c98a2873f"
+    }
+  ],
+  "mcp_reference_tools": 99
+}

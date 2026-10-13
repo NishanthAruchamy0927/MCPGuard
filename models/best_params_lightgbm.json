@@ -1,0 +1,22 @@
+{
+  "model": "lightgbm",
+  "best_value_cv_pr_auc": 0.6850893264840648,
+  "best_params": {
+    "n_estimators": 250,
+    "num_leaves": 47,
+    "learning_rate": 0.0156122572581788,
+    "subsample": 0.6909979358943357,
+    "colsample_bytree": 0.3393649931974844,
+    "min_child_samples": 18,
+    "reg_alpha": 0.9357432558603269,
+    "reg_lambda": 0.03294886719561694
+  },
+  "best_trial": 23,
+  "n_trials": 30,
+  "n_pruned": 15,
+  "cv_folds": 4,
+  "search_seconds": 77.9,
+  "sampler": "TPE",
+  "pruner": "MedianPruner",
+  "objective": "mean grouped-CV average precision (train split)"
+}

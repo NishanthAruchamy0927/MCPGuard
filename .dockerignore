@@ -1,0 +1,17 @@
+.venv/
+.git/
+**/__pycache__/
+**/*.pyc
+.pytest_cache/
+data/raw/
+data/processed/mcp_tools_dataset.*
+data/processed/embeddings.npy
+artifacts/mlruns/
+artifacts/mlflow.db
+artifacts/mcpguard.db
+artifacts/db/
+notebooks/
+tests/
+docs/
+*.log
+.env

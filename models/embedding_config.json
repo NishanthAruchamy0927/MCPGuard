@@ -1,0 +1,8 @@
+{
+  "backend": "sentence-transformers",
+  "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+  "pca_components": 48,
+  "pca_explained_variance": 0.6525139212608337,
+  "text_svd_components": 64,
+  "text_svd_explained_variance": 0.4040809727561502
+}

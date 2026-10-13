@@ -1,0 +1,366 @@
+{
+  "model": "XGBoost (Optuna-tuned)",
+  "model_id": "E6",
+  "threshold": 0.3889505863189697,
+  "test_metrics": {
+    "accuracy": 0.724025974025974,
+    "precision": 0.6388888888888888,
+    "recall": 0.736,
+    "f1": 0.6840148698884758,
+    "roc_auc": 0.7793005464480873,
+    "pr_auc": 0.7091957547498718,
+    "mcc": 0.44470168929217324,
+    "log_loss": 0.5611043458694159,
+    "brier": 0.18693539096516154,
+    "specificity": 0.7158469945355191,
+    "threshold": 0.3889505863189697,
+    "tp": 92,
+    "fp": 52,
+    "tn": 131,
+    "fn": 33,
+    "n": 308
+  },
+  "bootstrap_ci_95": {
+    "f1": {
+      "low": 0.6147690395078871,
+      "high": 0.7430881892230576
+    },
+    "roc_auc": {
+      "low": 0.7258775587744504,
+      "high": 0.8275342882925851
+    },
+    "pr_auc": {
+      "low": 0.6239445786126661,
+      "high": 0.7934364759935074
+    }
+  },
+  "paired_tests": [
+    {
+      "vs": "E1",
+      "vs_name": "TF-IDF + Logistic Regression",
+      "pr_auc": {
+        "metric": "pr_auc",
+        "mean_delta": 0.04755916420985844,
+        "ci_low": -0.014363131280971622,
+        "ci_high": 0.11124569482155301,
+        "p_value_one_sided": 0.074
+      },
+      "roc_auc": {
+        "metric": "roc_auc",
+        "mean_delta": 0.044190631717129294,
+        "ci_low": 0.000448779884157366,
+        "ci_high": 0.08900042741173025,
+        "p_value_one_sided": 0.023
+      }
+    },
+    {
+      "vs": "E2",
+      "vs_name": "TF-IDF + Random Forest",
+      "pr_auc": {
+        "metric": "pr_auc",
+        "mean_delta": 0.010932351968952737,
+        "ci_low": -0.03479385840849883,
+        "ci_high": 0.05316638391758885,
+        "p_value_one_sided": 0.315
+      },
+      "roc_auc": {
+        "metric": "roc_auc",
+        "mean_delta": 0.00011854650587013127,
+        "ci_low": -0.03776282672645386,
+        "ci_high": 0.03824022876543597,
+        "p_value_one_sided": 0.5
+      }
+    },
+    {
+      "vs": "E3",
+      "vs_name": "Semantic Embedding + Random Forest",
+      "pr_auc": {
+        "metric": "pr_auc",
+        "mean_delta": 0.0922891975849616,
+        "ci_low": 0.04512104582430732,
+        "ci_high": 0.14185684095787743,
+        "p_value_one_sided": 0.0
+      },
+      "roc_auc": {
+        "metric": "roc_auc",
+        "mean_delta": 0.08295941891159332,
+        "ci_low": 0.04012187973591909,
+        "ci_high": 0.12553788507444597,
+        "p_value_one_sided": 0.0
+      }
+    },
+    {
+      "vs": "E4",
+      "vs_name": "Semantic Embedding + XGBoost",
+      "pr_auc": {
+        "metric": "pr_auc",
+        "mean_delta": 0.10997312176398505,
+        "ci_low": 0.053312627274284485,
+        "ci_high": 0.1655529407915648,
+        "p_value_one_sided": 0.0
+      },
+      "roc_auc": {
+        "metric": "roc_auc",
+        "mean_delta": 0.10551672127050281,
+        "ci_low": 0.058788607939702725,
+        "ci_high": 0.15995870593104616,
+        "p_value_one_sided": 0.0
+      }
+    },
+    {
+      "vs": "E5",
+      "vs_name": "Combined Features + XGBoost",
+      "pr_auc": {
+        "metric": "pr_auc",
+        "mean_delta": 0.017370718754277155,
+        "ci_low": -0.009643826845155579,
+        "ci_high": 0.04505394585466139,
+        "p_value_one_sided": 0.103
+      },
+      "roc_auc": {
+        "metric": "roc_auc",
+        "mean_delta": 0.017321757902448675,
+        "ci_low": -0.0019679625221957647,
+        "ci_high": 0.03723434710289893,
+        "p_value_one_sided": 0.041
+      }
+    },
+    {
+      "vs": "B1",
+      "vs_name": "Doc-quality heuristic (rule)",
+      "pr_auc": {
+        "metric": "pr_auc",
+        "mean_delta": 0.28921416510810644,
+        "ci_low": 0.1877184424928562,
+        "ci_high": 0.37725533967168945,
+        "p_value_one_sided": 0.0
+      },
+      "roc_auc": {
+        "metric": "roc_auc",
+        "mean_delta": 0.2874709352430115,
+        "ci_low": 0.20259331993358273,
+        "ci_high": 0.36655141465250074,
+        "p_value_one_sided": 0.0
+      }
+    },
+    {
+      "vs": "B2",
+      "vs_name": "Combined Features + Logistic Regression",
+      "pr_auc": {
+        "metric": "pr_auc",
+        "mean_delta": 0.004293231865730069,
+        "ci_low": -0.05802710690580836,
+        "ci_high": 0.0631749615680952,
+        "p_value_one_sided": 0.428
+      },
+      "roc_auc": {
+        "metric": "roc_auc",
+        "mean_delta": -0.02271910844279197,
+        "ci_low": -0.05965498630826526,
+        "ci_high": 0.014533642762128325,
+        "p_value_one_sided": 0.884
+      }
+    },
+    {
+      "vs": "B3",
+      "vs_name": "Combined Features + Random Forest",
+      "pr_auc": {
+        "metric": "pr_auc",
+        "mean_delta": -0.0017566868743395746,
+        "ci_low": -0.02734286251880955,
+        "ci_high": 0.024160134643452166,
+        "p_value_one_sided": 0.563
+      },
+      "roc_auc": {
+        "metric": "roc_auc",
+        "mean_delta": -0.003217922565425832,
+        "ci_low": -0.024289352287621642,
+        "ci_high": 0.01762212066998904,
+        "p_value_one_sided": 0.622
+      }
+    },
+    {
+      "vs": "B4",
+      "vs_name": "Combined Features + LightGBM",
+      "pr_auc": {
+        "metric": "pr_auc",
+        "mean_delta": 0.018293811439299538,
+        "ci_low": -0.007544046524480121,
+        "ci_high": 0.04717560318789601,
+        "p_value_one_sided": 0.086
+      },
+      "roc_auc": {
+        "metric": "roc_auc",
+        "mean_delta": 0.029152907276076924,
+        "ci_low": 0.005648391727690247,
+        "ci_high": 0.05451342062905112,
+        "p_value_one_sided": 0.007
+      }
+    },
+    {
+      "vs": "B5",
+      "vs_name": "Combined Features + Hist. Gradient Boosting",
+      "pr_auc": {
+        "metric": "pr_auc",
+        "mean_delta": 0.03305509137519002,
+        "ci_low": 0.006514773854353795,
+        "ci_high": 0.06095558227696523,
+        "p_value_one_sided": 0.003
+      },
+      "roc_auc": {
+        "metric": "roc_auc",
+        "mean_delta": 0.044497868194756054,
+        "ci_low": 0.017360861831772278,
+        "ci_high": 0.07289000162224966,
+        "p_value_one_sided": 0.0
+      }
+    },
+    {
+      "vs": "B6",
+      "vs_name": "Combined Features + MLP Neural Network",
+      "pr_auc": {
+        "metric": "pr_auc",
+        "mean_delta": -0.034279118629188206,
+        "ci_low": -0.08395850595768695,
+        "ci_high": 0.019201197920439932,
+        "p_value_one_sided": 0.913
+      },
+      "roc_auc": {
+        "metric": "roc_auc",
+        "mean_delta": -0.020309394845136466,
+        "ci_low": -0.058016736027207284,
+        "ci_high": 0.01614983052338567,
+        "p_value_one_sided": 0.852
+      }
+    },
+    {
+      "vs": "B7",
+      "vs_name": "Optimized Combined Features + LightGBM",
+      "pr_auc": {
+        "metric": "pr_auc",
+        "mean_delta": 0.0206586127875314,
+        "ci_low": -0.0021495703656944608,
+        "ci_high": 0.0446389190215196,
+        "p_value_one_sided": 0.044
+      },
+      "roc_auc": {
+        "metric": "roc_auc",
+        "mean_delta": 0.016417268318668944,
+        "ci_low": -0.003178714781296188,
+        "ci_high": 0.03638903099033563,
+        "p_value_one_sided": 0.054
+      }
+    }
+  ],
+  "calibration": {
+    "mean_predicted": [
+      0.1023,
+      0.1673,
+      0.2191,
+      0.2625,
+      0.3254,
+      0.4152,
+      0.5167,
+      0.6267,
+      0.7652,
+      0.89
+    ],
+    "fraction_positive": [
+      0.1613,
+      0.129,
+      0.129,
+      0.2667,
+      0.2903,
+      0.4194,
+      0.5333,
+      0.6774,
+      0.5806,
+      0.871
+    ]
+  },
+  "probability_distribution": {
+    "bins": [
+      0.0,
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95,
+      1.0
+    ],
+    "positive": [
+      1,
+      2,
+      2,
+      5,
+      4,
+      7,
+      6,
+      7,
+      6,
+      10,
+      5,
+      10,
+      9,
+      7,
+      4,
+      6,
+      12,
+      13,
+      5,
+      4
+    ],
+    "negative": [
+      1,
+      8,
+      21,
+      28,
+      27,
+      24,
+      11,
+      14,
+      4,
+      10,
+      6,
+      3,
+      6,
+      5,
+      3,
+      5,
+      4,
+      2,
+      0,
+      1
+    ]
+  },
+  "risk_level_counts_all_tools": {
+    "LOW": 1004,
+    "MEDIUM": 301,
+    "HIGH": 227,
+    "CRITICAL": 620
+  },
+  "confusion_matrix": [
+    [
+      131,
+      52
+    ],
+    [
+      33,
+      92
+    ]
+  ]
+}

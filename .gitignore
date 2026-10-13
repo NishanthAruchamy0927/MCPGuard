@@ -1,0 +1,25 @@
+# environments
+.venv/
+venv/
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+
+# re-downloadable raw data (python -m src.data.download)
+data/raw/
+
+# local databases / tracking stores (regenerated)
+artifacts/mcpguard.db
+artifacts/db/
+artifacts/mlflow.db
+artifacts/mlruns/
+mlruns/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

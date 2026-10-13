@@ -1,0 +1,57 @@
+{
+  "dataset_version": "v1.0",
+  "built_at": "2026-10-12T17:08:51+00:00",
+  "records": 2181,
+  "by_source": {
+    "bfcl_v3": 1579,
+    "augmented": 503,
+    "mcp_reference_servers": 99
+  },
+  "by_provenance": {
+    "REAL_TOOL_DEFINITION": 1678,
+    "SYNTHETIC_AUGMENTED": 503
+  },
+  "by_episode_origin": {
+    "bfcl_real": 2050,
+    "synthetic_intent": 131
+  },
+  "positive_rate": 0.4066941769830353,
+  "error_type": {
+    "INVALID_ARG_VALUE": 881,
+    "NONE": 512,
+    "WRONG_TOOL_SELECTION": 269,
+    "MISSING_REQUIRED_ARG": 206,
+    "HALLUCINATED_PARAMETER": 136,
+    "INVALID_ARG_TYPE": 79,
+    "INVALID_ARG_FORMAT": 77,
+    "SCHEMA_PARSE_ERROR": 21
+  },
+  "error_severity": {
+    "LOW": 782,
+    "NONE": 512,
+    "MEDIUM": 404,
+    "HIGH": 286,
+    "CRITICAL": 197
+  },
+  "servers": 670,
+  "lineages": 1403,
+  "augmentation_ops": {
+    "add_noise_params": 46,
+    "strip_param_descriptions": 77,
+    "malform_schema": 21,
+    "enrich_documentation": 122,
+    "remove_types": 70,
+    "vague_description": 71,
+    "drop_required_list": 64,
+    "truncate_description": 83,
+    "remove_enums": 59
+  },
+  "positive_rate_by_source": {
+    "augmented": 0.499,
+    "bfcl_v3": 0.3654,
+    "mcp_reference_servers": 0.596
+  },
+  "mean_failure_rate": 0.27368179734066944,
+  "episodes_per_tool": 10,
+  "failure_rate_threshold": 0.3
+}

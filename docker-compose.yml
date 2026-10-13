@@ -1,0 +1,20 @@
+services:
+  mcpguard:
+    build: .
+    image: mcpguard:latest
+    container_name: mcpguard
+    ports:
+      - "7860:7860"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      PORT: "7860"
+      MCPGUARD_LOG_JSON: "1"
+      DATABASE_URL: "sqlite:////app/artifacts/db/mcpguard.db"
+    volumes:
+      - mcpguard-db:/app/artifacts/db
+    restart: unless-stopped
+
+volumes:
+  mcpguard-db:

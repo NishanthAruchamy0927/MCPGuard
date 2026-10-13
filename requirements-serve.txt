@@ -1,0 +1,19 @@
+# Runtime dependencies for the inference API + dashboard (used by the Docker image).
+fastapi==0.143.0
+uvicorn==0.54.0
+pydantic==2.14.1
+python-multipart==0.0.32
+SQLAlchemy==2.1.4
+PyYAML==6.0.3
+requests==2.34.2
+numpy==2.5.4
+pandas==3.0.6
+scipy==1.18.1
+scikit-learn==1.9.1
+joblib==1.6.0
+xgboost==3.4.1
+lightgbm==4.7.0
+shap==0.53.0
+sentence-transformers==6.1.0
+transformers==5.19.0
+torch==2.14.1

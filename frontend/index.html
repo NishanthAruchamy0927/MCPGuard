@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MCPGuard — Predict. Explain. Prevent agent failures.</title>
+  <meta name="description" content="An explainable machine learning framework that predicts which MCP tool descriptions cause AI agent errors." />
+  <link rel="icon" href="/static/img/logo.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/app.css" />
+  <script>
+    (function () {
+      try {
+        var q = new URLSearchParams(location.search).get("theme");
+        var t = q || localStorage.getItem("mcpguard-theme");
+        if (!t) t = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {}
+    })();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js" defer></script>
+</head>
+<body>
+  <div class="backdrop" aria-hidden="true"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="#/" aria-label="MCPGuard home">
+      <span class="brand-mark"><img src="/static/img/logo.svg" alt="" width="34" height="34" /></span>
+      <span class="brand-text"><strong>MCPGuard</strong><small>Agent-failure intelligence</small></span>
+    </a>
+    <nav class="nav" id="nav">
+      <div class="nav-group">Overview</div>
+      <a href="#/" data-route="home"><i data-icon="home"></i><span>Dashboard</span></a>
+      <div class="nav-group">Analyze</div>
+      <a href="#/analyze" data-route="analyze"><i data-icon="scan"></i><span>Tool Risk Analyzer</span></a>
+      <a href="#/batch" data-route="batch"><i data-icon="layers"></i><span>Batch Analyzer</span></a>
+      <div class="nav-group">Research</div>
+      <a href="#/performance" data-route="performance"><i data-icon="chart"></i><span>Model Performance</span></a>
+      <a href="#/explain" data-route="explain"><i data-icon="spark"></i><span>Explainability</span></a>
+      <a href="#/errors" data-route="errors"><i data-icon="target"></i><span>Error Analysis</span></a>
+      <a href="#/experiments" data-route="experiments"><i data-icon="flask"></i><span>Experiments</span></a>
+      <div class="nav-group">Data</div>
+      <a href="#/dataset" data-route="dataset"><i data-icon="database"></i><span>Dataset Explorer</span></a>
+      <a href="#/about" data-route="about"><i data-icon="book"></i><span>About &amp; Research</span></a>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="status-card" id="status-card">
+        <div class="status-row"><span class="dot pending"></span><span>Model status</span></div>
+        <div class="status-model mono" id="status-model">connecting…</div>
+      </div>
+      <a class="docs-link" href="/docs" target="_blank" rel="noopener"><i data-icon="code"></i>API docs <span class="kbd">/docs</span></a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="menu-btn" aria-label="Open navigation"><i data-icon="menu"></i></button>
+      <div class="crumbs"><span class="crumb-section" id="crumb-section">Overview</span><span class="crumb-sep">/</span><span id="crumb-page">Dashboard</span></div>
+      <div class="topbar-actions">
+        <a class="pill pill-ghost pill-link hide-sm" id="dataset-pill" href="#/dataset" title="Open the Dataset Explorer"><i data-icon="database"></i><span>dataset —</span></a>
+        <button class="icon-btn" id="theme-btn" aria-label="Toggle colour theme" title="Toggle theme"><i data-icon="moon"></i></button>
+        <a class="btn btn-primary btn-sm hide-sm" href="#/analyze"><i data-icon="scan"></i>Analyze a tool</a>
+      </div>
+    </header>
+    <main id="view" class="view" tabindex="-1"></main>
+    <footer class="footer">
+      <span>MCPGuard · 19MAM56 Advanced Machine Learning · Coimbatore Institute of Technology</span>
+      <span class="muted">Labels come from a controlled agent benchmark — see <a href="#/about">provenance</a>.</span>
+    </footer>
+  </div>
+
+  <div class="drawer-scrim" id="drawer-scrim" hidden></div>
+  <aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="drawer-head"><h3 id="drawer-title">Details</h3><button class="icon-btn" id="drawer-close" aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="drawer-body" id="drawer-body"></div>
+  </aside>
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <script type="module" src="/static/js/app.js"></script>
+</body>
+</html>

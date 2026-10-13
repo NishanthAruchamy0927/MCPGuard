@@ -1,0 +1,18 @@
+# MCPGuard — full environment (training + serving + tests). Python 3.14.
+# CPU-only PyTorch:  pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
+# then:              pip install -r requirements.txt
+
+# --- serving ---------------------------------------------------------------
+-r requirements-serve.txt
+pyarrow==25.0.1          # pandas 3 string dtype; needed to unpickle the feature pipeline
+
+# --- training / research ---------------------------------------------------
+optuna==5.0.0
+mlflow==3.17.0
+umap-learn==0.5.12
+numba==0.68.0
+matplotlib==3.11.2
+
+# --- tests -----------------------------------------------------------------
+pytest==9.1.1
+httpx==0.28.1

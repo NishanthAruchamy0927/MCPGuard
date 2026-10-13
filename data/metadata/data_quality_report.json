@@ -1,0 +1,24 @@
+{
+  "input_records": 2181,
+  "missing_values_before": {
+    "bfcl_category": 131,
+    "parent_tool_id": 1678
+  },
+  "empty_descriptions": 0,
+  "schema_issue_counts": {
+    "required_unknown_param": 14,
+    "type_alias_root": 8,
+    "invalid_json": 7,
+    "properties_not_mapping": 6
+  },
+  "malformed_schemas": 13,
+  "exact_duplicates_removed": 29,
+  "near_duplicate_groups": 379,
+  "dropped_missing_label": 0,
+  "output_records": 2152,
+  "class_balance": {
+    "0": 1275,
+    "1": 877
+  },
+  "imbalance_ratio": 1.454
+}

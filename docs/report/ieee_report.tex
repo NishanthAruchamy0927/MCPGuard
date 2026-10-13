@@ -1,0 +1,83 @@
+% TEMPLATE — {{TOKENS}} are filled by `python -m src.reporting.report`. Edit this file, not ieee_report.tex.
+% Compile ieee_report.tex with pdflatex (e.g. on Overleaf). Copy artifacts/figures/*.png into a figures/ folder next to it.
+\documentclass[conference]{IEEEtran}
+\usepackage{graphicx,booktabs,amsmath,url}
+\usepackage[hidelinks]{hyperref}
+\graphicspath{{figures/}{../../artifacts/figures/}}
+
+\begin{document}
+\title{Predicting Which MCP Tool Descriptions Cause Agent Errors: An Explainable Machine Learning Framework for Detecting High-Risk Model Context Protocol Tool Descriptions}
+\author{\IEEEauthorblockN{Student Name(s)}
+\IEEEauthorblockA{Department of Computing -- AI \& ML, Coimbatore Institute of Technology\\19MAM56 Advanced Machine Learning Lab -- CAT II}}
+\maketitle
+
+\begin{abstract}
+AI agents act on external systems through Model Context Protocol (MCP) tools that they understand only through a name, a description and a JSON input schema. We frame tool-definition risk as supervised learning. We assemble 2181 MCP-format tool records (1579 real BFCL functions with real queries and gold calls, 99 MCP reference-server tools, 503 documented augmentations), labelled by a controlled agent benchmark with BFCL-style call validation. Fused TF-IDF/LSA, MiniLM sentence-embedding, JSON-schema and engineered risk features feed 14 models; XGBoost and LightGBM are tuned with Optuna under grouped cross-validation. The selected XGBoost (Optuna-tuned) reaches test PR-AUC 0.709 (95\% CI [0.624, 0.793]), ROC-AUC 0.779 and F1 0.684, versus 0.406 (no-skill) and 0.416 (documentation-quality heuristic). Feature fusion adds +0.033 PR-AUC over the best single family. SHAP explanations drive actionable recommendations, and the system is deployed with FastAPI and Docker.
+\end{abstract}
+\begin{IEEEkeywords}Model Context Protocol, function calling, LLM agents, explainable AI, SHAP, XGBoost, Optuna\end{IEEEkeywords}
+
+\section{Introduction}
+An MCP tool exposes \texttt{name}, \texttt{description} and \texttt{inputSchema} to an agent, which must select the right tool and construct a valid call~\cite{mcp}. Vague, untyped or deeply nested definitions cause routing errors, missing arguments and invalid values. Our objectives are: (i) a provenance-labelled dataset with measured failure labels; (ii) multimodal feature engineering with dimensionality reduction; (iii) a benchmark of baseline and tuned models; (iv) SHAP explanations with recommendations; (v) containerised deployment.
+
+\section{Literature Review}
+Toolformer~\cite{toolformer} and ReAct~\cite{react} established tool-augmented LMs. Gorilla and BFCL~\cite{gorilla} evaluate agents with AST matching against gold calls, and ToolLLM~\cite{toolllm} scales tool use to real APIs. Hsieh et al.~\cite{hsieh} and EasyTool~\cite{easytool} show that documentation quality affects agent success, but they treat documentation as an intervention. Within the surveyed literature, we found no work that predicts tool-level failure risk from the definition alone; that is the gap we address.
+
+\section{Methodology}
+\textbf{Labels.} For each tool, a documentation-bounded simulated agent runs 10 episodes. Routing uses an embedding softmax over co-loaded sibling and random tools. Argument success probabilities depend on literal values in the request and on what the documentation exposes. Calls are validated against the hidden schema and gold values, and $y=\mathbb{1}[\text{failure rate}\ge 0.30]$. Mean episode failure is 27.4%.
+\textbf{Features.} TF-IDF word/char n-grams $\rightarrow$ TruncatedSVD (64); all-MiniLM-L6-v2~\cite{sbert} $\rightarrow$ PCA (48); 26 schema and 25 lexical statistics; six bounded risk scores, e.g.\ $\text{ambiguity}=\min(1,\,5v/T+0.5\,\mathbb{1}[T<6])$. Fused dimension: 169.
+\textbf{Models.} LR, RF, XGBoost~\cite{xgb}, LightGBM~\cite{lgbm}, HistGB and MLP, with cost-sensitive weights and a validation-tuned threshold. Optuna~\cite{optuna} (TPE + median pruning) maximises grouped-CV average precision (40/30 trials). The split is stratified and grouped by lineage (70/15/15: 1537/307/308); selection uses validation PR-AUC, then F1, then ROC-AUC.
+
+\section{Implementation \& Experiments}
+Python 3.14, scikit-learn, XGBoost, LightGBM, sentence-transformers, Optuna, SHAP~\cite{shap}, MLflow and FastAPI; seed 42. Dataset: 2152 clean records, 670 servers, positive rate 40.7%. Top SHAP drivers: Schema size, Text theme #23 (distance, untyped, search), Schema complexity score, Text theme #45 (function, coordinates, longitude), Average word length.
+
+\section{Results \& Comparative Analysis}
+\begin{table}[t]\centering\caption{Test-split benchmark (selected model in bold)}\label{tab:bench}
+\resizebox{\columnwidth}{!}{\begin{tabular}{lrrrrrr}\toprule
+\textbf{Model / features} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{ROC-AUC} & \textbf{PR-AUC} \\ \midrule
+Combined Features + MLP Neural Network & 0.604 & 0.507 & 0.928 & 0.655 & 0.800 & 0.745 \\
+Combined Features + Random Forest & 0.744 & 0.672 & 0.720 & 0.695 & 0.783 & 0.711 \\
+\textbf{Optimized Combined Features + XGBoost} & \textbf{0.724} & \textbf{0.639} & \textbf{0.736} & \textbf{0.684} & \textbf{0.779} & \textbf{0.709} \\
+Combined Features + Logistic Regression & 0.718 & 0.617 & 0.800 & 0.697 & 0.803 & 0.706 \\
+TF-IDF + Random Forest & 0.692 & 0.584 & 0.832 & 0.686 & 0.779 & 0.698 \\
+Combined Features + XGBoost & 0.643 & 0.538 & 0.856 & 0.660 & 0.762 & 0.693 \\
+Combined Features + LightGBM & 0.536 & 0.464 & 0.928 & 0.619 & 0.750 & 0.692 \\
+Optimized Combined Features + LightGBM & 0.594 & 0.500 & 0.880 & 0.638 & 0.763 & 0.690 \\
+Combined Features + Hist. Gradient Boosting & 0.506 & 0.447 & 0.912 & 0.600 & 0.735 & 0.676 \\
+TF-IDF + Logistic Regression & 0.601 & 0.505 & 0.824 & 0.626 & 0.735 & 0.661 \\
+Semantic Embedding + Random Forest & 0.640 & 0.544 & 0.696 & 0.611 & 0.695 & 0.616 \\
+Semantic Embedding + XGBoost & 0.617 & 0.520 & 0.728 & 0.607 & 0.673 & 0.599 \\
+Doc-quality heuristic (rule) & 0.406 & 0.405 & 0.984 & 0.573 & 0.492 & 0.416 \\
+Majority / prior baseline & 0.406 & 0.406 & 1.000 & 0.577 & 0.500 & 0.406 \\
+\bottomrule\end{tabular}}\end{table}
+\begin{table}[t]\centering\caption{Feature-family ablation (XGBoost, grouped 5-fold CV)}\label{tab:abl}
+\resizebox{\columnwidth}{!}{\begin{tabular}{llrlrr}\toprule
+\textbf{Set} & \textbf{Families} & \textbf{\\#feat} & \textbf{CV PR-AUC} & \textbf{CV ROC-AUC} & \textbf{Test PR-AUC} \\ \midrule
+A & Text (LSA) + Lexical / naming & 89 & 0.656 ± 0.051 & 0.729 & 0.656 \\
+B & Schema structure & 26 & 0.643 ± 0.034 & 0.697 & 0.640 \\
+C & Semantic embedding & 48 & 0.619 ± 0.056 & 0.710 & 0.599 \\
+D & Text (LSA) + Lexical / naming + Schema structure & 115 & 0.684 ± 0.041 & 0.752 & 0.694 \\
+E & Semantic embedding + Schema structure & 74 & 0.664 ± 0.033 & 0.747 & 0.671 \\
+F & Text (LSA) + Lexical / naming + Schema structure + Engineered risk scores + Semantic embedding & 169 & 0.690 ± 0.042 & 0.756 & 0.693 \\
+\bottomrule\end{tabular}}\end{table}
+\begin{figure}[t]\centering\includegraphics[width=\columnwidth]{03_pr_curves.png}\caption{Precision--recall curves on the test split.}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=\columnwidth]{04_shap_importance.png}\caption{Global SHAP feature importance.}\end{figure}
+The selected model reaches F1 0.684 ([0.615, 0.743]), ROC-AUC 0.779, PR-AUC 0.709 and MCC 0.445 (TP 92, TN 131, FP 52, FN 33). Fusion gives CV PR-AUC 0.690, against 0.656 for the best single family. \emph{Error analysis:} Most common source of model mistakes: missed failures whose dominant benchmark failure mode is invalid arg value (52% of false negatives).
+
+\section{Conclusion \& Future Scope}
+Tool-definition risk is learnable and explainable; representation fusion matters more than the choice of learner. The main limitation is that labels come from a calibrated simulated agent. Future work: relabel with real LLM agents, add closed-loop description rewriting, and train on production telemetry.
+
+\begin{thebibliography}{99}
+\bibitem{mcp} Anthropic, ``Model Context Protocol specification,'' 2024. [Online]. Available: \url{https://modelcontextprotocol.io}
+\bibitem{gorilla} S.~G. Patil, T.~Zhang, X.~Wang, and J.~E. Gonzalez, ``Gorilla: Large language model connected with massive APIs,'' arXiv:2305.15334, 2023.
+\bibitem{hsieh} C.-Y. Hsieh \emph{et al.}, ``Tool documentation enables zero-shot tool-usage with large language models,'' arXiv:2308.00675, 2023.
+\bibitem{easytool} S.~Yuan \emph{et al.}, ``EasyTool: Enhancing LLM-based agents with concise tool instruction,'' arXiv:2401.06201, 2024.
+\bibitem{toolllm} Y.~Qin \emph{et al.}, ``ToolLLM: Facilitating large language models to master 16000+ real-world APIs,'' arXiv:2307.16789, 2023.
+\bibitem{toolformer} T.~Schick \emph{et al.}, ``Toolformer: Language models can teach themselves to use tools,'' in \emph{Proc. NeurIPS}, 2023.
+\bibitem{react} S.~Yao \emph{et al.}, ``ReAct: Synergizing reasoning and acting in language models,'' in \emph{Proc. ICLR}, 2023.
+\bibitem{xgb} T.~Chen and C.~Guestrin, ``XGBoost: A scalable tree boosting system,'' in \emph{Proc. ACM SIGKDD}, 2016, pp. 785--794.
+\bibitem{lgbm} G.~Ke \emph{et al.}, ``LightGBM: A highly efficient gradient boosting decision tree,'' in \emph{Proc. NeurIPS}, 2017.
+\bibitem{optuna} T.~Akiba \emph{et al.}, ``Optuna: A next-generation hyperparameter optimization framework,'' in \emph{Proc. ACM SIGKDD}, 2019.
+\bibitem{sbert} N.~Reimers and I.~Gurevych, ``Sentence-BERT: Sentence embeddings using Siamese BERT-networks,'' in \emph{Proc. EMNLP-IJCNLP}, 2019.
+\bibitem{shap} S.~M. Lundberg and S.-I. Lee, ``A unified approach to interpreting model predictions,'' in \emph{Proc. NeurIPS}, 2017.
+\end{thebibliography}
+\end{document}
