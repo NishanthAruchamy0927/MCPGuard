@@ -173,7 +173,7 @@ Pushing to `origin` updates GitHub. To update the Hugging Face Space, follow [`d
 
 **Check a prediction from the API** (the app must be running, from step 6 or 7)
 ```powershell
-Invoke-RestMethod -Method Post -Uri http://localhost:7860/predict -ContentType "application/json" -Body '{"tool_name":"process","description":"Handles data operations as needed."}'
+Invoke-RestMethod -Method Post -Uri http://127.0.0.1:7860/predict -ContentType "application/json" -Body '{"tool_name":"process","description":"Handles data operations as needed."}'
 ```
 
 ## Deployment
