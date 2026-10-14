@@ -47,7 +47,7 @@ MCPGuard predicts, **before deployment**, how likely a tool definition is to cau
 
 ## Results
 <!-- RESULTS:START -->
-*Auto-generated from the latest pipeline run (2026-10-12). Labels: controlled agent benchmark.*
+*Auto-generated from the latest pipeline run (2026-10-14). Labels: controlled agent benchmark.*
 
 **Selected production model:** Optimized Combined Features + XGBoost: test **PR-AUC 0.709** (95% CI [0.624, 0.793]), ROC-AUC 0.779, F1 0.684, MCC 0.445 (threshold 0.389). No-skill PR-AUC = 0.406; documentation-quality heuristic = 0.416.
 

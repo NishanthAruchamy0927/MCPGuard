@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-12T17:15:02+00:00",
+  "generated_at": "2026-10-14T06:58:29+00:00",
   "rows": [
     {
       "id": "E1",
@@ -13,8 +13,8 @@
       ],
       "n_features": 7000,
       "threshold": 0.09028170017316464,
-      "train_seconds": 0.147,
-      "inference_ms_per_tool": 0.0053,
+      "train_seconds": 0.087,
+      "inference_ms_per_tool": 0.0032,
       "params": {},
       "train": {
         "accuracy": 0.7443070917371503,
@@ -83,8 +83,8 @@
       ],
       "n_features": 7000,
       "threshold": 0.3395640044525501,
-      "train_seconds": 1.542,
-      "inference_ms_per_tool": 0.1661,
+      "train_seconds": 0.811,
+      "inference_ms_per_tool": 0.0928,
       "params": {},
       "train": {
         "accuracy": 0.9577098243331165,
@@ -131,7 +131,7 @@
         "pr_auc": 0.697903773987031,
         "mcc": 0.4251727575297599,
         "log_loss": 0.5600504957537943,
-        "brier": 0.18870642928261397,
+        "brier": 0.18870642928261394,
         "specificity": 0.5956284153005464,
         "threshold": 0.3395640044525501,
         "tp": 104,
@@ -153,8 +153,8 @@
       ],
       "n_features": 48,
       "threshold": 0.3949233869789761,
-      "train_seconds": 1.217,
-      "inference_ms_per_tool": 0.1475,
+      "train_seconds": 0.597,
+      "inference_ms_per_tool": 0.0759,
       "params": {},
       "train": {
         "accuracy": 0.9908913467794405,
@@ -183,7 +183,7 @@
         "pr_auc": 0.6370148027796201,
         "mcc": 0.34855328758027126,
         "log_loss": 0.6105450795110985,
-        "brier": 0.21021346059881846,
+        "brier": 0.2102134605988184,
         "specificity": 0.6098901098901099,
         "threshold": 0.3949233869789761,
         "tp": 93,
@@ -223,8 +223,8 @@
       ],
       "n_features": 48,
       "threshold": 0.29751503467559814,
-      "train_seconds": 0.571,
-      "inference_ms_per_tool": 0.0033,
+      "train_seconds": 0.327,
+      "inference_ms_per_tool": 0.0019,
       "params": {},
       "train": {
         "accuracy": 0.9850357839947951,
@@ -297,8 +297,8 @@
       ],
       "n_features": 169,
       "threshold": 0.18977196514606476,
-      "train_seconds": 1.255,
-      "inference_ms_per_tool": 0.0037,
+      "train_seconds": 1.044,
+      "inference_ms_per_tool": 0.002,
       "params": {},
       "train": {
         "accuracy": 0.9733246584255042,
@@ -371,8 +371,8 @@
       ],
       "n_features": 169,
       "threshold": 0.3889505863189697,
-      "train_seconds": 1.843,
-      "inference_ms_per_tool": 0.0041,
+      "train_seconds": 2.631,
+      "inference_ms_per_tool": 0.0046,
       "params": {
         "n_estimators": 600,
         "max_depth": 5,
