@@ -2,7 +2,6 @@ services:
   mcpguard:
     build: .
     image: mcpguard:latest
-    container_name: mcpguard
     ports:
       - "7860:7860"
     env_file:
