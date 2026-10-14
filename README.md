@@ -25,70 +25,25 @@ short_description: Predict which MCP tool descriptions cause AI-agent errors
 
 19MAM56 Advanced Machine Learning Lab · CAT II Project · Coimbatore Institute of Technology
 
-**Live demo:** [https://nishanth0811-mcpguard.hf.space](https://nishanth0811-mcpguard.hf.space) · **Gradio UI:** [https://nishanth0811-mcpguard.hf.space/gradio](https://nishanth0811-mcpguard.hf.space/gradio) · **API docs:** [https://nishanth0811-mcpguard.hf.space/docs](https://nishanth0811-mcpguard.hf.space/docs) · **Code:** [https://github.com/NishanthAruchamy0927/MCPGuard](https://github.com/NishanthAruchamy0927/MCPGuard)
+**Live demo:** [nishanth0811-mcpguard.hf.space](https://nishanth0811-mcpguard.hf.space) · **Gradio UI:** [/gradio](https://nishanth0811-mcpguard.hf.space/gradio) · **API docs:** [/docs](https://nishanth0811-mcpguard.hf.space/docs) · **Code:** [GitHub](https://github.com/NishanthAruchamy0927/MCPGuard)
 
 </div>
 
 ---
 
-## Problem
-AI agents use external systems through **Model Context Protocol (MCP)** tools. An agent knows a tool only through its **name, natural-language description and JSON input schema**. Vague wording, undocumented parameters, missing constraints and deeply nested schemas lead agents to pick the wrong tool, omit required arguments or send invalid values. These failures are expensive to debug once tools are live.
+## What it does
+AI agents use **Model Context Protocol (MCP)** tools and see each tool only as a **name, a description and a JSON input schema**. Vague wording, undocumented parameters and deeply nested schemas make agents pick the wrong tool, omit arguments or send invalid values.
 
-## Research question
-> **Can machine learning identify high-risk MCP tool descriptions *before* they are deployed to AI agents, and explain which textual, semantic and structural properties drive that risk?**
+MCPGuard predicts, **before deployment**, how likely a tool definition is to cause agent errors, explains why with **SHAP**, and suggests concrete fixes.
 
-## Objectives
-1. Build a reproducible, provenance-labelled dataset of MCP tool definitions with **measured** failure labels.
-2. Engineer text, semantic-embedding, schema and risk features, with dimensionality reduction.
-3. Benchmark baseline and advanced models; tune with Optuna; track every run.
-4. Explain predictions with SHAP and turn them into documentation fixes.
-5. Serve real-time and batch inference through a validated FastAPI service and dashboard, in Docker.
+**How it works**
+1. **Data:** 1,579 real BFCL v3 functions (with real user questions and gold calls), 99 MCP reference-server tools and 503 documented augmentations. That gives 2,181 records, or 2,152 after cleaning.
+2. **Labels:** a controlled agent benchmark runs 10 simulated agent episodes per tool with BFCL-style call validation. A tool is labelled *error* if 30% or more of its episodes fail.
+3. **Features (169):** TF-IDF → LSA (64), MiniLM embeddings → PCA (48), 26 schema features, 25 lexical features and 6 risk scores. UMAP/PCA are used for visualisation.
+4. **Models:** 14 models (baselines, LR, RF, HistGB, MLP, XGBoost, LightGBM), with **Optuna** tuning and **MLflow** tracking. The split is grouped by tool lineage, so variants of a tool never leak between train and test.
+5. **Explain and serve:** SHAP explanations and a recommendation engine, a FastAPI service with a 9-page dashboard, Docker, and Hugging Face Spaces.
 
-## Key contributions
-- **A controlled agent benchmark** (`src/data/harness.py`) that labels each tool by running a documentation-bounded agent on **real BFCL user queries and gold calls**, with BFCL-style call validation. No label is assigned by hand.
-- **Multimodal feature fusion:** TF-IDF/LSA, all-MiniLM-L6-v2 → PCA, 26 schema statistics, 25 lexical statistics and 6 interpretable risk scores with documented formulas.
-- **A rigorous evaluation:** a leakage-safe grouped split, 14 models, Optuna, 95% bootstrap CIs, paired significance tests, a feature-family ablation, calibration and slice-based error analysis.
-- **Explainable recommendations:** SHAP drivers plus a rule layer that prioritises fixes the model itself flags.
-- **A polished research console**, served by FastAPI, with nine pages and live, never-hard-coded metrics.
-
-## Architecture
 ![Methodology](docs/figures/methodology.svg)
-
-```
-Browser ──► FastAPI (backend/app) ──► Inference pipeline (src/inference)
-              │  REST + /docs            ├─ validation (Pydantic)
-              │  static dashboard        ├─ preprocessing (text + JSON-schema)
-              │  SQLite / PostgreSQL     ├─ features: TF-IDF→LSA · MiniLM→PCA · schema · risk
-              │                          ├─ Optuna-tuned gradient boosting
-              └─ artefacts (cached)      └─ SHAP → risk band → recommendations
-```
-
-## Dataset
-| Provenance | Content |
-|---|---|
-| `REAL_TOOL_DEFINITION` | BFCL v3 functions (Apache-2.0) **with real user questions and gold calls**, converted to MCP format; MCP reference-server tools (filesystem, git, github, slack, …) |
-| `CONTROLLED_BENCHMARK` | Every label: 10 simulated agent episodes per tool → `failure_rate`, `agent_success_rate`, `error_occurred` (≥ 0.30), `error_severity`, `error_type` |
-| `SYNTHETIC_AUGMENTED` | Variants from 9 documented operators (8 degradations, 1 enrichment), kept in their seed's lineage |
-
-Details: [`docs/DATASET_CARD.md`](docs/DATASET_CARD.md) · preprocessing decisions: [`docs/PREPROCESSING.md`](docs/PREPROCESSING.md).
-
-## Feature engineering
-See [`docs/FEATURES.md`](docs/FEATURES.md). It covers every feature family and the formulas of the six risk scores (ambiguity, missing constraints, parameter complexity, schema complexity, description quality, instruction clarity).
-
-## Models
-Baselines: majority/prior, documentation-quality heuristic, TF-IDF + Logistic Regression, TF-IDF + Random Forest.
-Advanced: XGBoost, LightGBM, Histogram Gradient Boosting, MLP and Random Forest/LR on fused features, plus **Optuna-tuned XGBoost and LightGBM**.
-Imbalance: cost-sensitive weights + a validation-tuned threshold (no SMOTE on embeddings).
-Selection: validation **PR-AUC → F1 → ROC-AUC**.
-
-## Hyperparameter optimization
-Optuna TPE sampler with median pruning maximises mean average precision over 4-fold **stratified grouped CV inside the training split** (40 XGBoost and 30 LightGBM trials). Trials are saved to `artifacts/experiments/optuna_*_trials.csv`.
-
-## Explainability
-SHAP TreeExplainer gives global importance, a beeswarm, per-family shares and local explanations for every tool, plus the analyzer's live explanation. LSA text components are labelled with their top terms. Tests check that SHAP values sum exactly to the model logit.
-
-## Error analysis
-TP/TN/FP/FN example tables with SHAP drivers and an automatic "possible reason", slice analysis (failure mode, source, description length, parameter count, BFCL category) and an automated summary of the most common source of mistakes.
 
 ## Results
 <!-- RESULTS:START -->
@@ -133,116 +88,140 @@ Feature fusion vs. best single family (Text (LSA) + Lexical / naming): +0.033 PR
 Paired bootstrap tests, calibration and all figures: `artifacts/reports/results_tables.md`, `artifacts/figures/`.
 <!-- RESULTS:END -->
 
-## Installation
-```bash
-git clone <repo-url> mcpguard && cd mcpguard
-python -m venv .venv && source .venv/bin/activate          # Windows: .venv\Scripts\activate
-pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
-pip install -r requirements.txt
+## Commands, first to last
+Run the steps in order. The commands are for **Windows PowerShell**, so run them one per line (PowerShell 5.1 has no `&&`). The trained models are already in the repository, so **step 4 is optional**.
+
+**1. Get the code**
+```powershell
+git lfs install
+git clone https://github.com/NishanthAruchamy0927/MCPGuard.git
+cd MCPGuard
 ```
-`<repo-url>` is a placeholder for your GitHub URL; skip the clone if you already have the folder.
-Windows PowerShell 5.1 has no `&&`, so run the steps one per line:
+Git LFS downloads the model files. If you already have the folder, just `cd` into it.
+
+**2. Create and activate a virtual environment**
 ```powershell
 python -m venv .venv
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
 .venv\Scripts\Activate.ps1
+```
+On Linux or macOS, use `source .venv/bin/activate` instead.
+
+**3. Install dependencies**
+```powershell
 pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
 pip install -r requirements.txt
 ```
+Install CPU-only PyTorch first, then everything else.
 
-## Running locally
-```bash
-python -m src.pipeline.run_all            # full pipeline (download → … → figures → report), ~20 min CPU
-uvicorn backend.app.main:app --port 7860  # dashboard: http://localhost:7860 · API docs: /docs, /redoc
-pytest -q                                 # tests
+**4. (Optional) Re-run the whole ML pipeline**
+```powershell
+python -m src.pipeline.run_all
 ```
-Individual stages:
-```bash
-python -m src.data.download          python -m src.training.optimize
-python -m src.data.build_dataset     python -m src.training.train
-python -m src.data.preprocess        python -m src.explainability.generate
-python -m src.features.build         python -m src.evaluation.evaluate
-python -m src.visualization.figures  python -m src.reporting.report
+This runs every stage: download, benchmark labels, features, Optuna, 14 models, ablation, SHAP, figures and the report. It takes about 11 minutes on a CPU.
+- `--skip-download` reuses the data already downloaded.
+- `--fast` runs a quick smoke test with 6 Optuna trials.
+
+**5. Run the tests**
+```powershell
+pytest -q
 ```
-Or use `make data | optimize | train | evaluate | pipeline | run | test | docker`.
+53 tests should pass.
 
-## Docker
-```bash
-docker compose up --build            # http://localhost:7860
+**6. Start the app locally**
+```powershell
+uvicorn backend.app.main:app --port 7860
 ```
-The image is non-root, has a health check, and bakes in the model and embedding weights.
+- Dashboard: http://localhost:7860
+- API docs: http://localhost:7860/docs
 
-## Hugging Face deployment
-**Live:** [https://nishanth0811-mcpguard.hf.space](https://nishanth0811-mcpguard.hf.space) (Space: [https://huggingface.co/spaces/Nishanth0811/MCPGuard](https://huggingface.co/spaces/Nishanth0811/MCPGuard)).
+Press `Ctrl+C` to stop it.
 
-Hugging Face now restricts the Docker SDK to paid plans, so the public Space uses the free **Gradio SDK**: the front-matter above points it at [`space_app.py`](space_app.py), which serves the full FastAPI app (dashboard at `/`, REST API, `/docs`) and mounts a Gradio analyzer at `/gradio`. The same image also runs anywhere with Docker (`docker compose up --build`). Steps, plus AWS App Runner and GCP Cloud Run options, are in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
+**7. Run it in Docker**
+```powershell
+docker compose up --build -d
+docker compose ps
+docker compose down
+```
+`up` builds the image and starts the container at http://localhost:7860, `ps` should show `mcpguard` as `healthy`, and `down` stops it.
 
-## API documentation
+**8. Run the Hugging Face entry point locally (optional)**
+```powershell
+python space_app.py
+```
+This serves the dashboard at http://localhost:7860 and the Gradio analyzer at `/gradio`.
+
+**9. View the experiment tracking (optional)**
+```powershell
+mlflow ui --backend-store-uri sqlite:///artifacts/mlflow.db
+```
+Then open http://localhost:5000.
+
+**10. Regenerate the IEEE report numbers (optional)**
+```powershell
+python -m src.reporting.report
+```
+This refills `docs/report/ieee_report.tex` and the Results section above from the latest run.
+
+**11. Publish changes**
+```powershell
+git add -A
+git commit -m "Describe the change"
+git push origin main
+```
+Pushing to `origin` updates GitHub. To update the Hugging Face Space, follow [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
+
+**Check a prediction from the API** (the app must be running, from step 6 or 7)
+```powershell
+Invoke-RestMethod -Method Post -Uri http://localhost:7860/predict -ContentType "application/json" -Body '{"tool_name":"process","description":"Handles data operations as needed."}'
+```
+
+## Deployment
+| Where | How | Link |
+|---|---|---|
+| Local | `uvicorn backend.app.main:app --port 7860` | http://localhost:7860 |
+| Docker | `docker compose up --build` (non-root, health check, model baked in) | http://localhost:7860 |
+| Cloud | Hugging Face Space, Gradio SDK, entry point [`space_app.py`](space_app.py). Hugging Face restricts Docker Spaces to paid plans. | https://nishanth0811-mcpguard.hf.space |
+
+## API
 | Method | Endpoint | Purpose |
 |---|---|---|
-| GET | `/health` | Liveness + model status |
-| POST | `/predict` | Score one tool (risk, SHAP, recommendations) |
-| POST | `/batch-predict` | Score a JSON list of tools |
-| POST | `/batch-predict/file` | Upload CSV/JSON; `?format=csv` returns a downloadable CSV |
-| GET | `/model-metrics` | Benchmark, evaluation, curves, ablation |
-| GET | `/feature-importance` | Global SHAP |
-| GET | `/dataset-summary` · `/dataset/tools` · `/tools/{id}` | Dataset statistics, filterable table, tool detail + local SHAP |
-| GET | `/error-analysis` · `/experiments` · `/model-info` · `/projections` | Research artefacts |
-| POST | `/reload-model` | Hot-reload artefacts (optional `X-Admin-Token`) |
+| GET | `/health` | Liveness and model status |
+| POST | `/predict` | Score one tool: risk, SHAP drivers, recommendations |
+| POST | `/batch-predict` · `/batch-predict/file` | Score a JSON list, or upload a CSV/JSON file |
+| GET | `/model-metrics` · `/feature-importance` · `/error-analysis` · `/experiments` | Research artefacts |
+| GET | `/dataset-summary` · `/dataset/tools` · `/tools/{id}` | Dataset statistics, table and tool details |
+| POST | `/reload-model` | Reload artefacts (optional `X-Admin-Token`) |
 
-Interactive docs: **`/docs`** (Swagger UI) and **`/redoc`**.
-
-Example request:
-```bash
-curl -X POST localhost:7860/predict -H "Content-Type: application/json" -d '{
-  "tool_name": "search_customer",
-  "description": "Searches for a customer using customer ID.",
-  "input_schema": {"type": "object",
-                   "properties": {"customer_id": {"type": "string", "description": "Unique customer identifier"}},
-                   "required": ["customer_id"]}}'
-```
+Interactive docs are at **`/docs`** (Swagger UI) and **`/redoc`**.
 
 ## Project structure
 ```
-├── app/                  single-process launcher (python -m app.main)
-├── backend/app/          FastAPI: api/ schemas/ services/ database/ main.py
-├── frontend/             dashboard (index.html, static/css, static/js/pages/*)
-├── src/
-│   ├── data/             download, MCP reference tools, augmentation, harness, dataset builder
-│   ├── preprocessing/    text + JSON-schema processing, cleaning
-│   ├── features/         risk features, embeddings, fused feature builder
-│   ├── models/           model registry
-│   ├── training/         split, Optuna, training orchestrator, tracking
-│   ├── evaluation/       metrics, bootstrap tests, error analysis
-│   ├── explainability/   SHAP, recommendation engine
-│   ├── inference/        real-time predictor
-│   ├── visualization/    report figures + projections
-│   ├── reporting/        tables + IEEE report filling
-│   └── pipeline/         run_all
-├── configs/config.yaml   every tunable value
-├── data/                 raw/ processed/ external/ metadata/ dataset_card.md
-├── models/               best_model.joblib, preprocessor.joblib, tfidf_vectorizer.joblib, *.json
+├── backend/app/          FastAPI: routes, schemas, database, main.py
+├── frontend/             9-page dashboard (HTML, CSS, JS)
+├── src/                  ML code: data/ preprocessing/ features/ models/ training/
+│                         evaluation/ explainability/ inference/ visualization/ reporting/ pipeline/
+├── configs/config.yaml   every tunable setting
+├── data/  models/        dataset and trained models (best_model.joblib, preprocessor.joblib, …)
 ├── artifacts/            figures/ metrics/ experiments/ reports/
-├── docs/                 model & dataset cards, features, deployment, literature, report/
-├── notebooks/  tests/  scripts/
-└── Dockerfile  docker-compose.yml  requirements*.txt  Makefile  LICENSE
+├── docs/                 dataset & model cards, features, deployment, report/ (IEEE LaTeX + PDF preview)
+├── tests/                53 automated tests
+├── space_app.py          Hugging Face Space entry point (dashboard + Gradio)
+└── Dockerfile  docker-compose.yml  requirements.txt  requirements-serve.txt  Makefile
 ```
 
-## Screenshots
-Screenshots of the dashboard are in `docs/screenshots/` (regenerate with `scripts/screenshots.sh` while the server is running).
-
-| Dashboard | Tool Risk Analyzer |
-|---|---|
-| ![](docs/screenshots/home.png) | ![](docs/screenshots/analyze.png) |
-| **Model Performance** | **Explainability** |
-| ![](docs/screenshots/performance.png) | ![](docs/screenshots/explain.png) |
+## Documentation
+- [`docs/DATASET_CARD.md`](docs/DATASET_CARD.md) and [`docs/PREPROCESSING.md`](docs/PREPROCESSING.md): data sources, provenance and cleaning.
+- [`docs/FEATURES.md`](docs/FEATURES.md): every feature family and the risk-score formulas.
+- [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md): the model, its metrics and intended use.
+- [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md): Docker, Hugging Face, AWS and GCP.
+- [`docs/report/`](docs/report/): IEEE report (`ieee_report.tex`, `MCPGuard_Overleaf.zip`, preview PDF).
+- [`docs/REFERENCES.md`](docs/REFERENCES.md): references in IEEE style.
+- [`FINAL_REQUIREMENTS_CHECKLIST.md`](FINAL_REQUIREMENTS_CHECKLIST.md): each guideline requirement and its evidence.
 
 ## Limitations
-- **Labels come from a simulated agent**, calibrated once to the range of BFCL-reported AST error rates. It is a controlled benchmark, not production telemetry.
-- Some failure modes (sibling-tool routing, user phrasing, server strictness) are not observable from a single description; the error analysis quantifies this.
-- The corpus is English and BFCL-heavy.
+- Labels come from a **simulated agent** calibrated to BFCL-like error rates. This is a controlled benchmark, not production data.
+- Some failures depend on things outside the description, such as what the user types or competing tools. The error analysis measures this.
+- The corpus is English and mostly BFCL.
 
-## Future work
-Relabel with real LLM agents (pass@k across models); closed-loop LLM description rewriting re-scored by MCPGuard; cross-agent calibration; active learning from production logs.
-
-## References
-See [`docs/REFERENCES.md`](docs/REFERENCES.md) (IEEE style) and [`docs/LITERATURE_REVIEW.md`](docs/LITERATURE_REVIEW.md). The report is in [`docs/report/`](docs/report/).
+**Future work:** relabel with real LLM agents, add automatic rewriting of risky descriptions, and learn from production logs.
