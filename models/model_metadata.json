@@ -1,7 +1,7 @@
 {
   "project": "MCPGuard",
   "version": "1.0.0",
-  "trained_at": "2026-10-14T15:09:29+00:00",
+  "trained_at": "2026-10-14T16:52:56+00:00",
   "dataset_version": "v1.0",
   "model_id": "E6",
   "model_name": "XGBoost (Optuna-tuned)",

@@ -15,7 +15,7 @@
   "n_trials": 30,
   "n_pruned": 15,
   "cv_folds": 4,
-  "search_seconds": 79.1,
+  "search_seconds": 38.0,
   "sampler": "TPE",
   "pruner": "MedianPruner",
   "objective": "mean grouped-CV average precision (train split)"
