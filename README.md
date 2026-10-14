@@ -149,7 +149,7 @@ docker compose down
 ```powershell
 python space_app.py
 ```
-This serves the dashboard at http://localhost:7860 and the Gradio analyzer at `/gradio`.
+This serves the dashboard at http://127.0.0.1:7860 and the Gradio analyzer at http://127.0.0.1:7860/gradio. On Hugging Face Spaces, the server binds to `0.0.0.0` so the platform can reach it.
 
 **9. View the experiment tracking (optional)**
 ```powershell

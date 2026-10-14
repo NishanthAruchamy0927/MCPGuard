@@ -3,7 +3,7 @@
 Serves the full MCPGuard FastAPI app (REST API + research dashboard at /) and
 mounts a Gradio analyzer at /gradio, all on one port:
 
-    python space_app.py        # http://localhost:7860  ·  /gradio  ·  /docs
+    python space_app.py        # http://127.0.0.1:7860  ·  /gradio  ·  /docs
 """
 from __future__ import annotations
 
@@ -94,4 +94,5 @@ def _zerogpu_startup_report() -> None:
 
 if __name__ == "__main__":
     _zerogpu_startup_report()
-    uvicorn.run(app, host=os.environ.get("HOST", "0.0.0.0"), port=int(os.environ.get("PORT", "7860")))
+    default_host = "0.0.0.0" if os.environ.get("SPACE_ID") else "127.0.0.1"
+    uvicorn.run(app, host=os.environ.get("HOST", default_host), port=int(os.environ.get("PORT", "7860")))
